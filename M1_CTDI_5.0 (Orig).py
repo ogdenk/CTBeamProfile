@@ -1,7 +1,6 @@
 
 import numpy
 import math
-import array
 from numpy import sin, cos, tan, pi, arctan, sqrt, arccos
 
 # First take the CTDI measurements as a function of x
