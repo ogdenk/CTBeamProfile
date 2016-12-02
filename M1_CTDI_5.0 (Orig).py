@@ -19,12 +19,12 @@ step = 0
 while step < DIM:
     d_loc = step*(30.0/(DIM - 1)) # This value is set to 30 but could be anything, chose 30 to get the full range of the input distances
     distances.insert(step,step*(30.0/(DIM - 1)))
-    CTDIv.insert(step, (d_loc*d_loc*d_loc*d_loc)*CTDIc[0] + (d_loc*d_loc*d_loc)*CTDIc[1] + (d_loc*d_loc)*CTDIc[2] + (d_loc)*CTDIc[3] + CTDIc[4])
+    CTDIv.insert(step, d_loc**4.0*CTDIc[0] + d_loc**3.0*CTDIc[1] + d_loc**2.0*CTDIc[2] + d_loc*CTDIc[3] + CTDIc[4])
     #print d_loc
     #print CTDIv[step]
     step = step +1
 
-W = numpy.zeros((DIM,DIM)) # can call eliments by W[1][2], can make this matrix as large as desired
+W = numpy.zeros((DIM,DIM)) # can call elements by W[1][2], can make this matrix as large as desired
 dist_ad = numpy.zeros((DIM,DIM))
 Theta_ad = numpy.zeros((DIM,DIM))
 
@@ -76,8 +76,8 @@ while index < DIM: # go through each theta (to be used to make the matrix W colu
         Rx = 57*cos(Phi)
         Ry = 57*sin(Phi)
         r_primex =  57*cos(Phi) - dist[6]
-        if numpy.absolute(theta - arccos((Ry*Ry+(Rx*r_primex))/(sqrt(Rx*Rx + Ry*Ry)*sqrt(Ry*Ry+r_primex*r_primex)))) < delta:
-            delta = numpy.absolute(theta - arccos((Ry*Ry+(Rx*r_primex))/(sqrt(Rx*Rx + Ry*Ry)*sqrt(Ry*Ry+r_primex*r_primex))))        
+        if numpy.absolute(theta - arccos((Ry**2.0+(Rx*r_primex))/(sqrt(Rx**2.0 + Ry**2.0)*sqrt(Ry**2.0+r_primex*r_primex)))) < delta:
+            delta = numpy.absolute(theta - arccos((Ry**2.0+(Rx*r_primex))/(sqrt(Rx**2.0 + Ry**2.0)*sqrt(Ry**2.0+r_primex*r_primex))))
             Phi_arr.insert(index,Phi) # find the Phi that goes with each theta in "theta_arr" which evenly samples the value of max_theta 
         index_sub = index_sub +1
     #print 'theta', theta_arr[index]*180/pi
@@ -105,20 +105,20 @@ while index1 < DIM: # index1 is for each row where we consider a fixed distance 
             Rx = 57*cos(Phi)   # x component of R
             Ry = 57*sin(Phi)   # y component of R, this is the same as r_primey
             r_primex =  57*cos(Phi) - d # x component of the vector from the origin to the focal spot, r_primey would be the same as Ry
-            theta = arccos((Ry*Ry+(Rx*r_primex))/(sqrt(Rx*Rx + Ry*Ry)*sqrt(Ry*Ry+r_primex*r_primex)))
+            theta = arccos((Ry**2.0+(Rx*r_primex))/(sqrt(Rx**2.0 + Ry**2.0)*sqrt(Ry**2.0+r_primex*r_primex)))
             # theat is the angle between (vector from the origin to the focal spot) and (Vector from location d on the x axis where CTDI measurement was made and the focal spot), this angle is the BP angle
             #print index2
             #print theta_arr[index2]
             #print arccos((Ry*Ry+(Rx*r_primex))/(sqrt(Rx*Rx + Ry*Ry)*sqrt(Ry*Ry+r_primex*r_primex))  )          
-            if numpy.absolute(theta_arr[index2] - arccos((Ry*Ry+(Rx*r_primex))/(sqrt(Rx*Rx + Ry*Ry)*sqrt(Ry*Ry+r_primex*r_primex)))) < delta:
+            if numpy.absolute(theta_arr[index2] - arccos((Ry**2.0+(Rx*r_primex))/(sqrt(Rx**2.0 + Ry**2.0)*sqrt(Ry**2.0+r_primex*r_primex)))) < delta:
                 # The purpose of this If statement and this 3rd while loop it to find the Phi associated with each theta (column) and distance d (row), brute force method used as can be seen with minimizing delta
-                delta = numpy.absolute(theta_arr[index2] - arccos((Ry*Ry+(Rx*r_primex))/(sqrt(Rx*Rx + Ry*Ry)*sqrt(Ry*Ry+r_primex*r_primex))))        
+                delta = numpy.absolute(theta_arr[index2] - arccos((Ry**2.0+(Rx*r_primex))/(sqrt(Rx**2.0 + Ry**2.0)*sqrt(Ry**2.0+r_primex*r_primex))))
                 Phi_new = Phi # We now have the Phi used for the theta column position listed by index2 and distance in index1
                 theta_new = theta # Theta new is the theta associated with the Phi above
             index_sub = index_sub + 1
 
         rprime = sqrt(57*sin(Phi_new)*57*sin(Phi_new) + (57*cos(Phi_new) - d)*(57*cos(Phi_new) - d)) # vector from the CTDI measurement to the focal spot
-        rprime_dot = (2*57*57*sin(Phi_new)*cos(Phi_new)-2*57*sin(Phi_new)*(57*cos(Phi_new)-d))/(2*rprime) # r prime time derivative, rate at which r prime changes with time
+        rprime_dot = (2*57**2*sin(Phi_new)*cos(Phi_new)-2*57*sin(Phi_new)*(57*cos(Phi_new)-d))/(2*rprime) # r prime time derivative, rate at which r prime changes with time
         theta_dot = (d*cos(Phi_new) - rprime_dot*sin(theta_new))/(rprime*cos(theta_new)) # rate at which theta changes with time 
 
         #if index1 == 10:
@@ -127,11 +127,11 @@ while index1 < DIM: # index1 is for each row where we consider a fixed distance 
             print ' theta arr =', theta_arr[index2], ' theta arr in degree =', theta_arr[index2]*180/pi # these are the 21 theta's used
 
         if theta_arr[index2] <= max_theta_v[index1]: #Each row goes to the max possible theta, this is only achievable for the largest d or the last row of the matrix, each other row will have a max theta that differs and dependa on the distance d            
-            dist_ad[index1][index2] = (57*57)/(math.pow((57*sin(Phi_new)),2) +math.pow((57*cos(Phi_new)-d),2)) #weighting factor that takes into account inverse square to give a BP at a fixed distance R
+            dist_ad[index1][index2] = (57**2)/(math.pow((57*sin(Phi_new)),2) +math.pow((57*cos(Phi_new)-d),2)) #weighting factor that takes into account inverse square to give a BP at a fixed distance R
             # the contributions wrt theta_dot will not be linear but inverse since we want to know how long the focal spot stays at a theta position, also although there will be negative values of theta_dot to show change in
             #   direction we only care about the magnitude
             Theta_ad[index1][index2] = abs(1/theta_dot) # the weighting factor based on how long a angle theta contributes 
-            W[index1][index2] = ((57*57)/(math.pow((57*sin(Phi_new)),2) +math.pow((57*cos(Phi_new)-d),2)))*abs(1/theta_dot)
+            W[index1][index2] = ((57**2)/(math.pow((57*sin(Phi_new)),2) +math.pow((57*cos(Phi_new)-d),2)))*abs(1/theta_dot)
         else:
             W[index1][index2] = 0.0
 
