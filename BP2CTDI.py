@@ -13,5 +13,14 @@ theta = arctan2(d, 57.0) # Angular position of the beam profile measured values 
 
 r = numpy.sqrt(numpy.square(d)+57**2.0)  # radial distance from focal spot to measurement point
 
-print (r)
+P = BP*numpy.square(r)/57.0**2.0 # Beam Profile corrected to constant 57 cm distance from FS
+
+p = numpy.arange(0,360) # 360 angular tube positions to calculate the CTDI
+
+Tx = 57*cos(p*numpy.pi/180) # Focal Spot x coordinates
+Ty = 57*sin(p*numpy.pi/180) # Focal Spot y coordinates
+
+
+
+print (Tx, Ty)
 
