@@ -31,6 +31,8 @@ for x in  np.arange(0,d.size): # for each measured BP value, calculate ctdi at t
         cosTheta=dp/(fs2iso*r)
         if (cosTheta >1):
             cosTheta = 1
+        if (cosTheta <-1):
+            cosTheta = -1
         Phi = arccos(cosTheta)
         ctdi[x] += profile(Phi)*(fs2iso**2)/np.sqrt((d[x]-Tx)**2+Ty**2)**2 # accumulate inverse square corrected contribution
 
