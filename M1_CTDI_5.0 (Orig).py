@@ -123,7 +123,7 @@ while index1 < DIM: # index1 is for each row where we consider a fixed distance 
         #if index1 == 10:
         #    print 'index2 = ' , index2, ', Phi = ', Phi_new, ', theta = ', theta_new 'theta =' , theta,
         if index1 == 0:
-            print ' theta arr =', theta_arr[index2], ' theta arr in degree =', theta_arr[index2]*180/pi # these are the 21 theta's used
+            print (' theta arr =', theta_arr[index2], ' theta arr in degree =', theta_arr[index2]*180/pi) # these are the 21 theta's used
 
         if theta_arr[index2] <= max_theta_v[index1]: #Each row goes to the max possible theta, this is only achievable for the largest d or the last row of the matrix, each other row will have a max theta that differs and dependa on the distance d            
             dist_ad[index1][index2] = (57**2)/(math.pow((57*sin(Phi_new)),2) +math.pow((57*cos(Phi_new)-d),2)) #weighting factor that takes into account inverse square to give a BP at a fixed distance R
@@ -142,15 +142,15 @@ while index1 < DIM: # index1 is for each row where we consider a fixed distance 
 
     index1 = index1 + 1
     index2=0
-    print 'index1 = ', index1
+    print ('index1 = ', index1)
 
-print 'W matrix'
+print ('W matrix')
 print('\n'.join([''.join(['{:4}'.format(round(item,4)) for item in row]) 
       for row in W]))
-print  ' Adjust for dist'
+print  (' Adjust for dist')
 print('\n'.join([''.join(['{:4}'.format(round(item,4)) for item in row]) 
       for row in dist_ad]))
-print  ' Adjust for theta'
+print  (' Adjust for theta')
 print('\n'.join([''.join(['{:4}'.format(round(item,4)) for item in row]) 
       for row in Theta_ad]))
 
@@ -185,23 +185,23 @@ while index1 < DIM:
     index2 = 0
     index1 = index1 + 1
 
-print 'Normalized W'
+print ('Normalized W')
 print('\n'.join([''.join(['{:4}'.format(round(item,4)) for item in row]) 
       for row in W]))
 
 #BP = numpy.linalg.solve(W,CTDIv)
 BP = numpy.linalg.lstsq(W,CTDIv, 0.001) # http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.lstsq.html 
 
-print 'Beam profile using least squares'
+print ('Beam profile using least squares')
 index = 0
 while index < len(BP):
-    print BP[index]
+    print (BP[index])
     index = index + 1
 
-print 'CTDI interpolated'
+print ('CTDI interpolated')
 index = 0
 while index < len(CTDIv):
-    print CTDIv[index]
+    print (CTDIv[index])
     index = index + 1
 
 
